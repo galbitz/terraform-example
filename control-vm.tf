@@ -41,7 +41,7 @@ resource "azurerm_virtual_machine" "control-vm" {
   }
 
   storage_os_disk {
-    name          = "control-disk1"
+    name          = "${var.namespace}-control-disk1"
     caching       = "ReadWrite"
     create_option = "FromImage"
   }

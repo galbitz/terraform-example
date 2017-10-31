@@ -40,13 +40,13 @@ resource "azurerm_virtual_machine" "web-vm" {
   }
 
   storage_os_disk {
-    name          = "web-disk1"
+    name          = "${var.namespace}-web-disk1"
     caching       = "ReadWrite"
     create_option = "FromImage"
   }
 
   storage_data_disk {
-    name          = "web-disk2"
+    name          = "${var.namespace}-web-disk2"
     disk_size_gb  = "40"
     lun           = 1
     create_option = "Empty"
