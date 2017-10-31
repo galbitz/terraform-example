@@ -21,12 +21,12 @@ resource "azurerm_network_interface" "web-nic" {
 }
 
 resource "azurerm_virtual_machine" "web-vm" {
-  name                  = "${var.namespace}-web-vm"
-  location              = "${azurerm_resource_group.rg.location}"
-  resource_group_name   = "${azurerm_resource_group.rg.name}"
-  network_interface_ids = ["${azurerm_network_interface.web-nic.id}"]
+  name                         = "${var.namespace}-web-vm"
+  location                     = "${azurerm_resource_group.rg.location}"
+  resource_group_name          = "${azurerm_resource_group.rg.name}"
+  network_interface_ids        = ["${azurerm_network_interface.web-nic.id}"]
   primary_network_interface_id = "${azurerm_network_interface.web-nic.id}"
-  vm_size               = "${var.vmsize}"
+  vm_size                      = "${var.vmsize}"
 
   delete_os_disk_on_termination = true
 
@@ -61,7 +61,6 @@ resource "azurerm_virtual_machine" "web-vm" {
   os_profile_windows_config {
     provision_vm_agent = true
   }
-  
 }
 
 resource "azurerm_virtual_machine_extension" "web-vm-extension" {
@@ -72,7 +71,7 @@ resource "azurerm_virtual_machine_extension" "web-vm-extension" {
   publisher            = "Microsoft.Compute"
   type                 = "CustomScriptExtension"
   type_handler_version = "1.9"
-  depends_on = ["azurerm_virtual_machine.web-vm","azurerm_storage_blob.provision","azurerm_storage_blob.assign_drives","azurerm_storage_blob.ConfigureRemotingForAnsible","azurerm_storage_blob.ansible_install_centos","azurerm_storage_blob.webdeploypriv","azurerm_storage_blob.webdeploypub"]
+  depends_on           = ["azurerm_virtual_machine.web-vm", "azurerm_storage_blob.provision", "azurerm_storage_blob.assign_drives", "azurerm_storage_blob.ConfigureRemotingForAnsible", "azurerm_storage_blob.ansible_install_centos", "azurerm_storage_blob.webdeploypriv", "azurerm_storage_blob.webdeploypub"]
 
   settings = <<SETTINGS
     {
@@ -82,25 +81,17 @@ resource "azurerm_virtual_machine_extension" "web-vm-extension" {
           "${azurerm_storage_account.storage.primary_blob_endpoint}${azurerm_storage_container.artifacts.name}/web/ConfigureRemotingForAnsible.ps1"
         ],
         "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File web/provision.ps1 -Azure"
-
+        
     }
 SETTINGS
-
 }
-
-# data "template_file" "url" {
-#   template = "${file("url.txt")}"
-#   depends_on = ["null_resource.upload"]
-# }
-
-# data "template_file" "token" {
-#   template = "${file("token.txt")}"
-#   depends_on = ["null_resource.upload"]
-# }
-
 
 data "azurerm_public_ip" "web-public-ip" {
   name                = "${azurerm_public_ip.web-ip.name}"
   resource_group_name = "${azurerm_resource_group.rg.name}"
   depends_on          = ["azurerm_virtual_machine.web-vm"]
+}
+
+output "web-vm-ip_address" {
+  value = "${data.azurerm_public_ip.web-public-ip.ip_address}"
 }

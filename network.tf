@@ -1,14 +1,3 @@
-# Configure the Microsoft Azure Provider
-provider "azurerm" {
-  #  subscription_id = "your_subscription_id_from_script_execution"  #  client_id       = "your_client_id_from_script_execution"  #  client_secret   = "your_client_secret_from_script_execution"  #  tenant_id       = "your_tenant_id_from_script_execution"
-}
-
-# create a resource group 
-resource "azurerm_resource_group" "rg" {
-  name     = "rg-${var.namespace}"
-  location = "${var.location}"
-}
-
 resource "azurerm_network_security_group" "security-group" {
   name                = "${var.namespace}-security-group"
   location            = "${azurerm_resource_group.rg.location}"
@@ -83,11 +72,9 @@ resource "azurerm_virtual_network" "virtual-network" {
 }
 
 resource "azurerm_subnet" "subnet" {
-  name                 = "${var.namespace}-subnet"
-  resource_group_name  = "${azurerm_resource_group.rg.name}"
-  virtual_network_name = "${azurerm_virtual_network.virtual-network.name}"
-  address_prefix       = "10.0.0.0/24"
+  name                      = "${var.namespace}-subnet"
+  resource_group_name       = "${azurerm_resource_group.rg.name}"
+  virtual_network_name      = "${azurerm_virtual_network.virtual-network.name}"
+  address_prefix            = "10.0.0.0/24"
   network_security_group_id = "${azurerm_network_security_group.security-group.id}"
 }
-
-
