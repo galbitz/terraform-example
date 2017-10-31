@@ -1,0 +1,4 @@
+setenv.ps1
+.terraform
+*.tfstate
+*.tfstate.backup
