@@ -72,7 +72,8 @@ resource "azurerm_virtual_machine_extension" "control-vm-extension" {
         "fileUris": [
           "${azurerm_storage_account.storage.primary_blob_endpoint}${azurerm_storage_container.artifacts.name}/control/ansible_install_centos.sh",
           "${azurerm_storage_account.storage.primary_blob_endpoint}${azurerm_storage_container.artifacts.name}/control/provision.sh",
-          "${azurerm_storage_account.storage.primary_blob_endpoint}${azurerm_storage_container.artifacts.name}/control/webdeploy.priv"
+          "${azurerm_storage_account.storage.primary_blob_endpoint}${azurerm_storage_container.artifacts.name}/control/webdeploy.priv",
+          "${azurerm_storage_account.storage.primary_blob_endpoint}${azurerm_storage_container.artifacts.name}/control/webdeploy.pub"
         ],
         "commandToExecute": "sh provision.sh"
 
